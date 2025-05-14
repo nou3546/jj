@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Romantic Note</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif; /* Changed font */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #fde3e9; /* Romantic Pink background */
+            margin: 0;
+            perspective: 1000px;
+            overflow: hidden;
+        }
+
+        .envelope-container {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .envelope {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            background-color: #c0392b; /* Romantic Red envelope */
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background-color: #d64541; /* Slightly lighter Romantic Red flap */
+            clip-path: polygon(0 0, 100% 0, 50% 100%);
+            transform-origin: bottom center;
+            transition: transform 0.7s 0.1s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            z-index: 2;
+        }
+
+        .envelope-body {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #c0392b; /* Romantic Red envelope body */
+            border-radius: 0 0 5px 5px;
+            z-index: 1;
+        }
+        
+        .click-to-open-text {
+            position: absolute;
+            top: 25%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 16px; /* Slightly larger for Times New Roman */
+            color: #fff0f5; /* LavenderBlush - light color for contrast on red */
+            font-weight: bold;
+            z-index: 4;
+            opacity: 1;
+            transition: opacity 0.3s ease-out;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .envelope-container.opened .click-to-open-text {
+            opacity: 0;
+        }
+
+        .letter {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100%) scaleY(0.8);
+            width: 100%; /* 270px based on 300px envelope */
+            background-color: #fff8dc; /* Creamy paper */
+            border: 1px solid #eee;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+            box-sizing: border-box;
+            opacity: 0;
+            transition: transform 0.8s 0.3s ease-out, opacity 0.5s 0.3s ease-out, max-height 0.8s 0.3s ease-out;
+            z-index: 2;
+            overflow-y: auto; /* <<<<<<<< IMPORTANT FOR SCROLLING */
+            max-height: 0; /* Start with no height, will be set on open */
+        }
+
+        .envelope-container.opened .letter {
+            transform: translateX(-50%) translateY(-40%) scaleY(1);
+            opacity: 1;
+            max-height: 800px; /* <<<<<<<< SET MAX HEIGHT FOR SCROLLING */
+        }
+
+        /* Page styling */
+        .page {
+            display: none;
+            padding-bottom: 20px;
+            animation: fadeInPage 0.5s ease-in-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .page h2 {
+            margin-top: 0;
+            color: #5c2c2c; /* Darker red for headings */
+            border-bottom: 1px solid #e0b0b0; /* Lighter red for border */
+            padding-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .page p {
+            line-height: 1.7; /* Adjusted for Times New Roman */
+            color: #4a3b3b; /* Dark brown-ish for text */
+            margin-bottom: 1.2em;
+        }
+
+        /* Navigation buttons */
+        .letter-nav {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .letter-nav button {
+            background-color: #a03024; /* Darker Red for buttons */
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin: 0 5px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 14px;
+            font-family: 'Times New Roman', Times, serif; /* Ensure button font matches */
+            transition: background-color 0.2s;
+        }
+
+        .letter-nav button:hover {
+            background-color: #802015; /* Even darker red on hover */
+        }
+
+        .letter-nav button:disabled {
+            background-color: #d1a3a3; /* Muted red for disabled */
+            color: #f0f0f0;
+            cursor: not-allowed;
+        }
+        
+        @keyframes fadeInPage {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="envelope-container" id="envelopeContainer">
+        <div class="envelope">
+            <div class="envelope-flap"></div>
+            <div class="envelope-body"></div>
+            <div class="click-to-open-text">With ❤️</div>
+        </div>
+        <div class="letter" id="letterContent" tabindex="0"> <!-- Added tabindex for focus -->
+            <div class="page active" id="page1">
+                <h2>JayJay</h2>
+                <p>
+                    The excitement of growing up comes from the excitement of newness. <br>
+                    “First times” I would call them. <br>
+                    Dreams of someday having the freedom to drive a car wherever I wanted, or vacationing without the cumbersome weight of my family. <br>
+                    But now, with many drives, and many vacations, the used to be wonder factors have dulled, faded, from their fantastical status I once attributed to them. <br>
+                    No longer does my heart pump in excitement one month in advance of a vacation, <br>
+                    Nor in the advent of being a two hours drive away from home. <br>
+                </p>
+            </div>
+
+            <div class="page" id="page2">
+                <p>
+                    Even with my hobbies in high school, albeit some I may have been forced into, <br>
+                    But as college application season ended, and we moved onto college, <br>
+                    I considered my activities to be archived, never to be used again. <br>
+                    For me, they had no purpose, no value other than the attempt to please an admissions officer <br>
+                </p>
+            </div>
+
+            <div class="page" id="page3">
+                <p>
+                    Everything changed when I met you. <br>
+                    When I met you, it was like reliving my childhood. <br>
+                    Any activity, no matter how mediocre I previously thought it was, was raised to pure ecstasy if it meant that I was going to do it with you. <br>
+                    I  believed that I would return home greeted by the dusty piano keys, rather, I play, in hopes of you singing along to the song. <br>
+                    Tennis balls which haven’t been used in over a year, was bounced on the court for the first time with you. <br>
+                    Activities that I would attribute to mundane: talking walks, cooking food, even rotting in bed, have become so enjoyable when you are by my side. <br>
+                    Jayjay, you have breathed new life into me. <br>
+                    You’ve made everything feel meaningful again. <br>
+                    I desire to do everything with you, from the most tedious tasks to highest highs, I want to do it all.
+                </p>
+            </div>
+
+            <div class="page" id="page4">
+                <p>
+                    
+                    I dream of driving forever, talking while the radio plays. <br>
+                    I dream of exploring the world together with you, in any destination, in any part of the word. <br>
+                    You have no idea how much I want it. <br>
+                    You’ve given me a second life <br>
+
+                    Thank you, Sean
+                </p>
+            </div>
+
+            <div class="page" id="page5">
+                <h2>post scriptum</h2>
+                <p>
+                    Especially in my two days Europe, jay, I’ve missed you so much. It’s hard with the time zone changes now, that I see you haven’t said a word in a few hours to find out you’re already asleep. Laying in bed for the few hours before I fall asleep knowing I can’t talk to you pains my heart. I miss you so much. I’ve listed things I want to talk to you over FaceTime, but I fear our calls may not be as frequent as I thought. 
+                    Even more so jayjay, I want to explore Europe with you so so bad. This place is beautiful, from the architecture, food, weather. I want your narak face walking by my side in these streets. i’m really considering going Europe abroad next spring already.
+
+                    I miss u so much, I love you so much
+
+                </p>
+            </div>
+
+            <div class="letter-nav">
+                <button id="prevPage" disabled>Previous</button>
+                <button id="nextPage">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const envelopeContainer = document.getElementById('envelopeContainer');
+        const letterContent = document.getElementById('letterContent');
+        const pages = letterContent.querySelectorAll('.page');
+        const prevButton = document.getElementById('prevPage');
+        const nextButton = document.getElementById('nextPage');
+
+        let currentPageIndex = 0;
+
+        function showPage(index) {
+            pages.forEach((page, i) => {
+                page.classList.toggle('active', i === index);
+            });
+            prevButton.disabled = index === 0;
+            nextButton.disabled = index === pages.length - 1;
+            currentPageIndex = index;
+            // When changing pages, scroll the letter content back to the top
+            if (letterContent.classList.contains('opened')) {
+                letterContent.scrollTop = 0;
+            }
+        }
+
+        envelopeContainer.addEventListener('click', () => {
+            if (!envelopeContainer.classList.contains('opened')) {
+                envelopeContainer.classList.add('opened');
+                letterContent.classList.add('opened'); // Add class to letter too for max-height transition
+                setTimeout(() => {
+                    letterContent.focus(); 
+                    letterContent.scrollTop = 0;
+                }, 800); 
+            }
+        });
+
+        prevButton.addEventListener('click', (event) => {
+            event.stopPropagation();
+            if (currentPageIndex > 0) {
+                showPage(currentPageIndex - 1);
+            }
+        });
+
+        nextButton.addEventListener('click', (event) => {
+            event.stopPropagation();
+            if (currentPageIndex < pages.length - 1) {
+                showPage(currentPageIndex + 1);
+            }
+        });
+
+        showPage(0);
+    </script>
+
+</body>
+</html>
